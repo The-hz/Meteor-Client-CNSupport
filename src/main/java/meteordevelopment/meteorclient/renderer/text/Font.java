@@ -32,7 +32,7 @@ public class Font {
 
     // 从 charset.txt 读取码点
     public static void loadCharset() {
-        try (InputStream in = Font.class.getResourceAsStream("/assets/meteorclient/fonts/charset.txt")) {
+        try (InputStream in = Font.class.getResourceAsStream("/assets/" + MeteorClient.MOD_ID + "/fonts/charset.txt")) {
             if (in == null) {
                 MeteorClient.LOG.warn("charset.txt not found, CJK support disabled.");
                 extraCodepoints = new int[0];
