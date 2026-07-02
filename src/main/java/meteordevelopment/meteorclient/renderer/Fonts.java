@@ -8,7 +8,7 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.meteor.CustomFontChangedEvent;
 import meteordevelopment.meteorclient.gui.WidgetScreen;
 import meteordevelopment.meteorclient.renderer.text.CustomTextRenderer;
-import meteordevelopment.meteorclient.renderer.text.Font;       // ← 新增
+import meteordevelopment.meteorclient.renderer.text.Font;
 import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.FontFamily;
 import meteordevelopment.meteorclient.renderer.text.FontInfo;
@@ -35,7 +35,7 @@ public class Fonts {
 
     @PreInit(dependencies = Shaders.class)
     public static void refresh() {
-        Font.loadCharset();                              // ← 新增这一行
+        Font.loadCharset();
         FONT_FAMILIES.clear();
         for (String builtinFont : BUILTIN_FONTS) {
             FontUtils.loadBuiltin(FONT_FAMILIES, builtinFont);

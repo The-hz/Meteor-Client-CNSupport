@@ -31,8 +31,9 @@
 2. 将其名字后的类似 `Regular` 的后缀移除。
 3. 使用压缩软件打开本模组的源码，进入 `assets/meteor-client/fonts/` 目录。
 4. 将字体文件替换进去。
-5. 确保 `fonts` 目录下有一个 `charset.txt`（用于告诉模组需要打包哪些中文字符）。
-6. 在替换后运行构建（详见“构建项目”部分）
+5. 在 `meteordevelopment.meteorclient.renderer.Fonts.java` 中将你的字体名字添加进 `BUILTIN_FONTS` 内
+6. 确保 `fonts` 目录下有一个 `charset.txt`（用于告诉模组需要打包哪些中文字符）。
+7. 在替换后运行构建（详见“构建项目”部分）
 
 ##  给开发者的说明
 
