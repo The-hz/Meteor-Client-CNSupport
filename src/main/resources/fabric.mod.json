@@ -7,12 +7,13 @@
   "authors": [
     "MineGame159",
     "squidoodly",
-    "seasnail"
+    "seasnail",
+    "The-hz"
   ],
   "contact": {
     "homepage": "https://meteorclient.com",
-    "issues": "https://github.com/MeteorDevelopment/meteor-client/issues",
-    "sources": "https://github.com/MeteorDevelopment/meteor-client",
+    "issues": "https://github.com/MeteorDevelopment/meteor-client/issues & https://github.com/The-hz/Meteor-Client-CNSupport/issues",
+    "sources": "https://github.com/MeteorDevelopment/meteor-client & https://github.com/The-hz/Meteor-Client-CNSupport",
     "discord": "https://meteorclient.com/discord"
   },
   "license": "GPL-3.0",
