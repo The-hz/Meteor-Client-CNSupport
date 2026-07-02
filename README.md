@@ -6,7 +6,7 @@
 
 本分支主要解决了 Meteor Client 在中文环境下字体渲染的痛点，包含以下核心改动：
 
-- **️ ClickGUI 原版字体开关**：在 GUI 主题设置中新增了 `Vanilla Font` 选项。开启后，ClickGUI 将使用 Minecraft 原生的字体渲染器（`VanillaTextRenderer`），原生支持中文及 CJK 字符，告别方块字。
+- **️ ClickGUI 原版字体开关**：在 GUI 主题设置中新增了 `Custom Font` 选项。关闭后，ClickGUI 将使用 Minecraft 原生的字体渲染器（`VanillaTextRenderer`），原生支持中文及 CJK 字符，告别滚木。
 - **️ STB 自定义字体中文字符集扩展**：重写了 `Font.java` 的字体图集打包逻辑。通过引入按需生成的 `charset.txt`（从 MC 和 Meteor 的语言文件中提取），让 STB 自定义字体也能正确渲染游戏内出现的中文。
 - **️ 精简内置字体**：移除了原版 Meteor 自带的四个英文字体文件，减小模组体积。
 

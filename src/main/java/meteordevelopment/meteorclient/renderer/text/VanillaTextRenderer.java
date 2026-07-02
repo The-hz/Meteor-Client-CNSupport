@@ -13,7 +13,9 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
@@ -23,14 +25,15 @@ public class VanillaTextRenderer implements TextRenderer {
     private final BufferAllocator buffer = new BufferAllocator(2048);
     private final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
 
-    private final MatrixStack matrices = new MatrixStack();
-    private final Matrix4f emptyMatrix = new Matrix4f();
-
     public double scale = 2;
     public boolean scaleIndividually;
 
     private boolean building;
     private double alpha = 1;
+
+    // 缓存渲染请求，等 end() 时拿到正确的矩阵再画
+    private record QueuedText(String text, float x, float y, int color, boolean shadow) {}
+    private final List<QueuedText> textQueue = new ArrayList<>();
 
     private VanillaTextRenderer() {
         // Use INSTANCE
@@ -60,6 +63,7 @@ public class VanillaTextRenderer implements TextRenderer {
 
         this.scale = scale * 2;
         this.building = true;
+        textQueue.clear();
     }
 
     @Override
@@ -70,24 +74,14 @@ public class VanillaTextRenderer implements TextRenderer {
         x += 0.5 * scale;
         y += 0.5 * scale;
 
-        int preA = color.a;
-        color.a = (int) (((double) color.a / 255 * alpha) * 255);
+        // 计算带透明度的颜色，但不立即绘制，放入队列
+        int packedColor = new Color(color.r, color.g, color.b, (int) (((double) color.a / 255 * alpha) * 255)).getPacked();
+        textQueue.add(new QueuedText(text, (float) (x / scale), (float) (y / scale), packedColor, shadow));
 
-        Matrix4f matrix = emptyMatrix;
-        if (scaleIndividually) {
-            matrices.push();
-            matrices.scale((float) scale, (float) scale, 1);
-            matrix = matrices.peek().getPositionMatrix();
-        }
+        double width = mc.textRenderer.getWidth(text) + (shadow ? 1 : 0);
 
-        double x2 = mc.textRenderer.draw(text, (float) (x / scale), (float) (y / scale), color.getPacked(), shadow, matrix, immediate, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-
-        if (scaleIndividually) matrices.pop();
-
-        color.a = preA;
-
-        if (!wasBuilding) end();
-        return (x2 - 1) * scale;
+        if (!wasBuilding) end(null);
+        return (x / scale + width - 1) * scale;
     }
 
     @Override
@@ -99,16 +93,20 @@ public class VanillaTextRenderer implements TextRenderer {
     public void end(MatrixStack matrices) {
         if (!building) throw new RuntimeException("VanillaTextRenderer.end() called without calling begin()");
 
-        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        Matrix4f baseMatrix = matrices != null ? matrices.peek().getPositionMatrix() : new Matrix4f();
+
+        Matrix4f finalMatrix = new Matrix4f(baseMatrix);
+        finalMatrix.scale((float) scale, (float) scale, 1);
 
         RenderSystem.disableDepthTest();
-        matrixStack.pushMatrix();
-        if (matrices != null) matrixStack.mul(matrices.peek().getPositionMatrix());
-        if (!scaleIndividually) matrixStack.scale((float) scale, (float) scale, 1);
 
+        for (QueuedText qt : textQueue) {
+            mc.textRenderer.draw(qt.text(), qt.x(), qt.y(), qt.color(), qt.shadow(), finalMatrix, immediate, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+        }
+
+        textQueue.clear();
         immediate.draw();
 
-        matrixStack.popMatrix();
         RenderSystem.enableDepthTest();
 
         this.scale = 2;

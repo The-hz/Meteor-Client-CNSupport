@@ -54,8 +54,8 @@ public class MeteorGuiTheme extends GuiTheme {
         })
         .build()
     );
-    public final Setting<Boolean> customFont = sgGeneral.add(new BoolSetting.Builder()
-        .name("custom-font")
+    public final Setting<Boolean> vanillaFont = sgGeneral.add(new BoolSetting.Builder()
+        .name("vanilla-font")
         .description("Use Minecraft's vanilla font renderer instead of the custom one. Enables full CJK support without modifying font files.")
         .defaultValue(false)
         .onChanged(aBoolean -> {
@@ -298,7 +298,7 @@ public class MeteorGuiTheme extends GuiTheme {
     // Other
     @Override
     public TextRenderer textRenderer() {
-        if (!customFont.get()) {
+        if (vanillaFont.get()) {
             //VanillaTextRenderer.INSTANCE.scaleIndividually = true;
             return VanillaTextRenderer.INSTANCE;
         }
