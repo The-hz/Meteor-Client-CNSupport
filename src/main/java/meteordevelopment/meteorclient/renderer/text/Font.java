@@ -25,12 +25,10 @@ public class Font {
     private final float scale;
     private final float ascent;
     private final Int2ObjectOpenHashMap<CharData> charMap = new Int2ObjectOpenHashMap<>();
-    private static final int size = 4096;   // 原 2048 → 4096，给 CJK 留位
+    private static final int size = 81920;
 
-    // 启动时加载一次的按需字符集
     private static int[] extraCodepoints = new int[0];
 
-    // 从 charset.txt 读取码点
     public static void loadCharset() {
         try (InputStream in = Font.class.getResourceAsStream("/assets/" + MeteorClient.MOD_ID + "/fonts/charset.txt")) {
             if (in == null) {
@@ -63,10 +61,10 @@ public class Font {
             STBTTPackedchar.create(144),                     // Greek and Coptic
             STBTTPackedchar.create(256),                     // Cyrillic
             STBTTPackedchar.create(1),                       // infinity symbol
-            STBTTPackedchar.create(extraCodepoints.length)   // CJK 按需
+            STBTTPackedchar.create(extraCodepoints.length)   // CJK
         };
 
-        // 准备离散码点 IntBuffer（STBTTPackRange.set 第 3 个参数传它即离散模式）
+
         IntBuffer cpBuf = null;
         if (extraCodepoints.length > 0) {
             cpBuf = BufferUtils.createIntBuffer(extraCodepoints.length);
@@ -85,7 +83,6 @@ public class Font {
         packRange.put(STBTTPackRange.create().set(height, 880,  null, 144, cdata[3], (byte) 2, (byte) 2));
         packRange.put(STBTTPackRange.create().set(height, 1024, null, 256, cdata[4], (byte) 2, (byte) 2));
         packRange.put(STBTTPackRange.create().set(height, 8734, null, 1,   cdata[5], (byte) 2, (byte) 2));
-        // CJK 离散数组段：第 3 个参数传 cpBuf，第 2 个参数 first_unicode 被忽略
         if (cpBuf != null) {
             packRange.put(STBTTPackRange.create().set(height, 0, cpBuf,
                 extraCodepoints.length, cdata[6], (byte) 2, (byte) 2));
@@ -109,7 +106,6 @@ public class Font {
             this.ascent = ascent.get(0);
         }
 
-        // 前 6 段连续：键 = j + offset（原逻辑）
         for (int i = 0; i < 6; i++) {
             STBTTPackedchar.Buffer cbuf = cdata[i];
             int offset = packRange.get(i).first_unicode_codepoint_in_range();
@@ -118,10 +114,9 @@ public class Font {
             }
         }
 
-        // 第 7 段离散：键 = cpBuf.get(j)，不能用 j+offset
         if (cpBuf != null && cdata[6].capacity() > 0) {
             STBTTPackedchar.Buffer cbuf = cdata[6];
-            cpBuf.rewind();   // PackFontRanges 内部消费过 cpBuf，这里 rewind 再读
+            cpBuf.rewind();
             for (int j = 0; j < cbuf.capacity(); j++) {
                 int cp = cpBuf.get(j);
                 charMap.put(cp, toCharData(cbuf.get(j)));
