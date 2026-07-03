@@ -25,7 +25,7 @@ public class Font {
     private final float scale;
     private final float ascent;
     private final Int2ObjectOpenHashMap<CharData> charMap = new Int2ObjectOpenHashMap<>();
-    private static final int size = 81920;
+    private static final int size = 8192;
 
     private static int[] extraCodepoints = new int[0];
 
