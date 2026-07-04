@@ -29,8 +29,10 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 
 public class MaceKill extends Module {
-    private final SettingGroup specialGroup = settings.createGroup("Values higher than 22fall/4spam only work on Paper/Spigot");
-    private final SettingGroup totem = settings.createGroup("Totem Bypass (PAPER ONLY)");
+    private final SettingGroup specialGroup = settings
+        .createGroup("Values higher than 22fall/4spam only work on Paper/Spigot");
+    private final SettingGroup totem = settings
+        .createGroup("Totem Bypass (PAPER ONLY)");
     private final Setting<Boolean> swing = specialGroup.add(new BoolSetting.Builder()
         .name("swing arm")
         .defaultValue(true)
@@ -104,7 +106,7 @@ public class MaceKill extends Module {
     );
 
     public MaceKill() {
-        super(Categories.Combat, "MaceKill", "Makes the Mace powerful when swung. Can also bypass totem usage,Skid from etianl/Trouser-Streak");
+        super(Categories.Combat, "mace-kill", "Makes the Mace powerful when swung. Can also bypass totem usage,Skid from etianl/Trouser-Streak");
     }
 
     private Vec3d previouspos;

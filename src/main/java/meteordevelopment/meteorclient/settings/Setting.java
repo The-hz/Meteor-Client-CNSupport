@@ -9,6 +9,8 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.IGetter;
 import meteordevelopment.meteorclient.utils.misc.ISerializable;
+import meteordevelopment.meteorclient.utils.misc.Translator; // 导入融合后的翻译类
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -22,7 +24,9 @@ import java.util.function.Consumer;
 public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
     private static final List<String> NO_SUGGESTIONS = new ArrayList<>(0);
 
-    public final String name, title, description;
+    public final String name;
+    public String title; // 改为非 final 以便翻译修改
+    public String description; // 改为非 final 以便翻译修改
     private final IVisible visible;
 
     protected final T defaultValue;
@@ -38,6 +42,16 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
         this.name = name;
         this.title = Utils.nameToTitle(name);
         this.description = description;
+
+        // --- 融合的 I18n 翻译逻辑 ---
+        Translator translator = Translator.getInstance();
+        translator.reload(MinecraftClient.getInstance().getResourceManager());
+        String settingKey = "Setting.Meteor." + this.name;
+        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
+        this.title = translator.Translate(settingKey, this.title);
+        this.description = translator.Translate(descriptionKey, this.description);
+        // ---------------------------
+
         this.defaultValue = defaultValue;
         this.onChanged = onChanged;
         this.onModuleActivated = onModuleActivated;

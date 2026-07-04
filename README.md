@@ -2,7 +2,7 @@
 
 # Meteor Client CNSupport
 
-> 基于官方 Meteor Client 的分支，专为 Minecraft Fabric 打造。移除了原本自带的字体，并为 ClickGUI等 增加了完善的中文渲染支持，未来会对模块进行汉化，并尽快跟上原仓库的脚步
+> 基于官方 Meteor Client 的分支，专为 Minecraft Fabric 打造。移除了原本自带的字体，并为 ClickGUI等 增加了完善的中文渲染支持和汉化，并尽快跟上原仓库的脚步
 
 ##  特性
 
@@ -14,14 +14,14 @@
 
 ##  安装说明
 
-1. 确保你已安装 **Minecraft 1.21.4** 和 **Fabric Loader**。
-2. 下载本仓库的最新 Release 版本（`meteor-client-1.21.4-local.jar`）。
+1. 确保你已安装 **Minecraft** 和 **Fabric Loader**。
+2. 下载本仓库的最新 Release 版本（`meteor-client-*游戏版本*-local.jar`）。
 3. 将下载的 `.jar` 文件放入游戏的 `mods` 文件夹中。
 4. 确保同时安装了 **Fabric API**。
 
 ##  使用方法
 
-### 方案一：使用原版字体渲染（最简单，推荐）
+### 方案一：使用原版字体渲染
 如果你不想折腾字体文件，这是最省事的方法：
 1. 进入游戏，按 `Right Shift` 打开 ClickGUI。
 2. 在 **General** 选项卡下，找到并开启 **Vanilla Font**。
@@ -58,6 +58,8 @@ cd Meteor-Client-CNSupport
 ##  鸣谢
 
 - [Meteor Development](https://github.com/MeteorDevelopment/meteor-client) - 原版 Meteor Client 的开发团队。
+- [Meteor-I18n-Support-plugin](https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin) - 原版 Meteor Client 的汉化插件。
+- [Trouser-Streak](https://github.com/etianl/Trouser-Streak) - 原版 MeteorClient 的增进使用体验的插件。
 - 所有为 Meteor 汉化做出贡献的社区成员。
 
 ##  许可证
@@ -68,7 +70,7 @@ cd Meteor-Client-CNSupport
 
 # Meteor Client CNSupport
 
-> A fork of the official Meteor Client, built for Minecraft Fabric. Removes the bundled fonts and adds comprehensive Chinese rendering support for ClickGUI and more. Future plans include module localization and keeping up with the upstream repository.
+> A fork of the official Meteor Client, built for Minecraft Fabric. Removes the bundled fonts and adds comprehensive Chinese rendering support and module localization for ClickGUI and more. Future plans keeping up with the upstream repository.
 
 ## Features
 
@@ -80,14 +82,14 @@ This branch primarily addresses the pain points of font rendering in Chinese env
 
 ## Installation
 
-1. Ensure you have **Minecraft 1.21.4** and **Fabric Loader** installed.
-2. Download the latest Release version from this repository (`meteor-client-1.21.4-local.jar`).
+1. Ensure you have **Minecraf** and **Fabric Loader** installed.
+2. Download the latest Release version from this repository (`meteor-client-*GameVersion*-local.jar`).
 3. Place the downloaded `.jar` file into your game's `mods` folder.
 4. Ensure **Fabric API** is also installed.
 
 ## Usage
 
-### Option 1: Use Vanilla Font Rendering (Easiest, Recommended)
+### Option 1: Use Vanilla Font Rendering
 If you don't want to mess with font files, this is the most hassle-free method:
 1. Enter the game and press `Right Shift` to open ClickGUI.
 2. Under the **General** tab, find and enable **Vanilla Font**.
@@ -122,6 +124,8 @@ The build artifact is located under `build/libs/`; please use the jar file **wit
 ## Credits
 
 - [Meteor Development](https://github.com/MeteorDevelopment/meteor-client) - The original Meteor Client development team.
+- [Meteor-I18n-Support-plugin](https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin) - The original Meteor Client Chinese localization plugin.
+- [Trouser-Streak](https://github.com/etianl/Trouser-Streak) - The original MeteorClient plugin that enhances user experience.
 - All community members who have contributed to Meteor's Chinese localization.
 
 ## License
