@@ -1,6 +1,9 @@
 /*
  * This file is part of the Meteor Client distribution (https://github.com/MeteorDevelopment/meteor-client).
  * Copyright (c) Meteor Development.
+ *
+ * Derived from dingzhen-vape's Meteor-I18n-Support-plugin (CC0 1.0)
+ * Original: https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin
  */
 
 package meteordevelopment.meteorclient.utils.misc;

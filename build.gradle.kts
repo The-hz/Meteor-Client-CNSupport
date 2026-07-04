@@ -1,20 +1,37 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     id("fabric-loom") version "1.9-SNAPSHOT"
     id("maven-publish")
     id("com.gradleup.shadow") version "9.0.0-beta4"
 }
 
+fun getGitCommit(): String {
+    val stdout = ByteArrayOutputStream()
+    val result = exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+        isIgnoreExitValue = true
+    }
+    return if (result.exitValue == 0) stdout.toString().trim() else "local"
+}
+
+fun getGitCommitCount(): String {
+    val stdout = ByteArrayOutputStream()
+    val result = exec {
+        commandLine("git", "rev-list", "--count", "HEAD")
+        standardOutput = stdout
+        isIgnoreExitValue = true
+    }
+    return if (result.exitValue == 0) stdout.toString().trim() else "local"
+}
+
 base {
     archivesName = properties["archives_base_name"] as String
     group = properties["maven_group"] as String
 
-    val suffix = if (project.hasProperty("build_number")) {
-        project.findProperty("build_number")
-    } else {
-        "local"
-    }
-
-    version = properties["minecraft_version"] as String + "-" + suffix
+    val buildNumber = getGitCommitCount()
+    version = properties["minecraft_version"] as String + "-" + buildNumber
 }
 
 repositories {
@@ -115,8 +132,8 @@ afterEvaluate {
 
 tasks {
     processResources {
-        val buildNumber = project.findProperty("build_number")?.toString() ?: ""
-        val commit = project.findProperty("commit")?.toString() ?: ""
+        val buildNumber = getGitCommitCount()
+        val commit = getGitCommit()
 
         val propertyMap = mapOf(
             "version" to project.version,
