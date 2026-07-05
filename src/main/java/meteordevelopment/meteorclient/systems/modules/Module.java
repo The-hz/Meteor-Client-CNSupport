@@ -15,7 +15,7 @@ import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.ISerializable;
 import meteordevelopment.meteorclient.utils.misc.Keybind;
-import meteordevelopment.meteorclient.utils.misc.Translator; // 导入融合后的翻译类
+import meteordevelopment.meteorclient.utils.misc.Translator;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.MinecraftClient;

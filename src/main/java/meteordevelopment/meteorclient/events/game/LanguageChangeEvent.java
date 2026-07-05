@@ -18,6 +18,11 @@ public class LanguageChangeEvent extends Cancellable {
         List<Module> modules = Modules.get().getList();
         for (Module module : modules) {
             module.changeLanguage();
+            for (var group : module.settings) {
+                for (var setting : group) {
+                    setting.changeLanguage();
+                }
+            }
         }
     }
     public String getLanguageCode() {
