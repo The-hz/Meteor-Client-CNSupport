@@ -32,8 +32,8 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
 
     public final Category category;
     public final String name;
-    public String title; // 改为非 final 以便翻译时修改
-    public String description; // 改为非 final 以便翻译时修改
+    public String description;
+    public String title;
     public final String[] aliases;
     public final Color color;
 
@@ -62,14 +62,13 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
         this.aliases = aliases;
         this.color = Color.fromHsv(Utils.random(0.0, 360.0), 0.35, 1);
 
-        // --- 融合的 I18n 翻译逻辑 ---
+        //translate - init
         Translator translator = Translator.getInstance();
         translator.reload(mc.getResourceManager());
         String moduleKey = "Module.Meteor." + this.name;
         String descriptionKey = "Module.Meteor." + this.name + ".Description";
         this.title = translator.Translate(moduleKey, this.title);
         this.description = translator.Translate(descriptionKey, this.description);
-        // ---------------------------
 
         String classname = this.getClass().getName();
         for (MeteorAddon addon : AddonManager.ADDONS) {
@@ -88,6 +87,20 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
 
     public WWidget getWidget(GuiTheme theme) {
         return null;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void changeLanguage() {
+        //translate - when user change language
+        Translator translator = Translator.getInstance();
+        translator.reload(MinecraftClient.getInstance().getResourceManager());
+        String settingKey = "Setting.Meteor." + this.name;
+        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
+        this.title = translator.Translate(settingKey, this.title);
+        this.description = translator.Translate(descriptionKey, this.description);
     }
 
     public void onActivate() {}

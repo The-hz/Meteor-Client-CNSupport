@@ -43,14 +43,13 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
         this.title = Utils.nameToTitle(name);
         this.description = description;
 
-        // --- 融合的 I18n 翻译逻辑 ---
+        //translate
         Translator translator = Translator.getInstance();
         translator.reload(MinecraftClient.getInstance().getResourceManager());
         String settingKey = "Setting.Meteor." + this.name;
         String descriptionKey = "Setting.Meteor." + this.name + ".Description";
         this.title = translator.Translate(settingKey, this.title);
         this.description = translator.Translate(descriptionKey, this.description);
-        // ---------------------------
 
         this.defaultValue = defaultValue;
         this.onChanged = onChanged;
@@ -58,6 +57,15 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
         this.visible = visible;
 
         resetImpl();
+    }
+
+    public void changeLanguage() {
+        Translator translator = Translator.getInstance();
+        translator.reload(MinecraftClient.getInstance().getResourceManager());
+        String settingKey = "Setting.Meteor." + this.name;
+        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
+        this.title = translator.Translate(settingKey, this.title);
+        this.description = translator.Translate(descriptionKey, this.description);
     }
 
     @Override

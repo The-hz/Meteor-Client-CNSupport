@@ -104,9 +104,9 @@ public class Modules extends System<Modules> {
 
     public void sortModules() {
         for (List<Module> modules : groups.values()) {
-            modules.sort(Comparator.comparing(o -> o.title));
+            modules.sort(Comparator.comparing(o -> o.getTitle()));
         }
-        modules.sort(Comparator.comparing(o -> o.title));
+        modules.sort(Comparator.comparing(o -> o.getTitle()));
     }
 
     public static void registerCategory(Category category) {
@@ -172,7 +172,7 @@ public class Modules extends System<Modules> {
         Map<Module, Integer> modules = new ValueComparableMap<>(Comparator.naturalOrder());
 
         for (Module module : this.moduleInstances.values()) {
-            int score = Utils.searchLevenshteinDefault(module.title, text, false);
+            int score = Utils.searchLevenshteinDefault(module.getTitle(), text, false);
             if (Config.get().moduleAliases.get()) {
                 for (String alias : module.aliases) {
                     int aliasScore = Utils.searchLevenshteinDefault(alias, text, false);
