@@ -17,10 +17,10 @@ public class LanguageChangeEvent extends Cancellable {
         this.languageCode = languageCode;
         List<Module> modules = Modules.get().getList();
         for (Module module : modules) {
-            module.changeLanguage();
+            module.changeLanguage(languageCode);
             for (var group : module.settings) {
                 for (var setting : group) {
-                    setting.changeLanguage();
+                    setting.changeLanguage(languageCode);
                 }
             }
         }

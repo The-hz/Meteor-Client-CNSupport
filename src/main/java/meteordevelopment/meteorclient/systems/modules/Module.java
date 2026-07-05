@@ -33,7 +33,9 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public final Category category;
     public final String name;
     public String description;
+    private String normalDescription;
     public String title;
+    private String normalTitle;
     public final String[] aliases;
     public final Color color;
 
@@ -58,7 +60,9 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
         this.category = category;
         this.name = name;
         this.title = Utils.nameToTitle(name);
+        this.normalTitle = Utils.nameToTitle(name);
         this.description = description;
+        this.normalDescription = description;
         this.aliases = aliases;
         this.color = Color.fromHsv(Utils.random(0.0, 360.0), 0.35, 1);
 
@@ -93,14 +97,19 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
         return title;
     }
 
-    public void changeLanguage() {
+    public void changeLanguage(String languageCode) {
         //translate - when user change language
-        Translator translator = Translator.getInstance();
-        translator.reload(MinecraftClient.getInstance().getResourceManager());
-        String settingKey = "Setting.Meteor." + this.name;
-        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(settingKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
+        if (languageCode.toLowerCase().contains("zh_")) {
+            Translator translator = Translator.getInstance();
+            translator.reload(mc.getResourceManager());
+            String moduleKey = "Module.Meteor." + this.name;
+            String descriptionKey = "Module.Meteor." + this.name + ".Description";
+            this.title = translator.Translate(moduleKey, this.title);
+            this.description = translator.Translate(descriptionKey, this.description);
+        }else{
+            this.title = normalTitle;
+            this.description = normalDescription;
+        }
     }
 
     public void onActivate() {}

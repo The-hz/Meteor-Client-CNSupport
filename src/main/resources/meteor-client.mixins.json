@@ -191,7 +191,8 @@
     "WorldRendererAccessor",
     "WorldRendererMixin",
     "YggdrasilMinecraftSessionServiceAccessor",
-    "DeprecatedLanguageDataMixin"
+    "DeprecatedLanguageDataMixin",
+    "LanguageManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

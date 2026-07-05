@@ -14,7 +14,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import meteordevelopment.meteorclient.MeteorClient;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.resource.language.TranslationStorage;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -40,7 +39,8 @@ public class Translator {
 
     public String Translate(String key, String name) {
         String value = this.currentLangStrings != null ? this.currentLangStrings.get(key) : null;
-        if(value != null){
+
+        if (value != null) {
             return value;
         } else {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -66,26 +66,26 @@ public class Translator {
 
     private Iterable<String> getCurrentLangCodes() {
         String mainLangCode = MinecraftClient.getInstance().getLanguageManager().getLanguage().toLowerCase();
+
         ArrayList<String> langCodes = new ArrayList<>();
         langCodes.add("en_us.json");
-        if(!"en_us.json".equals(mainLangCode)) langCodes.add(mainLangCode);
+        if (!"en_us.json".equals(mainLangCode)) {
+            langCodes.add(mainLangCode);
+        }
+
         return langCodes;
     }
 
-    public String translateMc(String key, Object... args) {
-        if(I18n.hasTranslation(key)) return I18n.translate(key, args);
-        return key;
-    }
-
     private void loadTranslations(ResourceManager manager, Iterable<String> langCodes, BiConsumer<String, String> entryConsumer) {
-        for(String langCode : langCodes) {
+        for (String langCode : langCodes) {
             String langFilePath = "lang/" + langCode + ".json";
-            // 将原本的 yalu 改为 meteor-client，使其读取本体的语言文件
+
             Identifier langId = Identifier.of(MeteorClient.MOD_ID, langFilePath);
-            for(Resource resource : manager.getAllResources(langId)) {
-                try(InputStream stream = resource.getInputStream()) {
+
+            for (Resource resource : manager.getAllResources(langId)) {
+                try (InputStream stream = resource.getInputStream()) {
                     Language.load(stream, entryConsumer);
-                } catch(IOException e) {
+                } catch (IOException e) {
                     System.out.println("Failed to load translations for " + langCode + " from pack " + resource.getPackId());
                     e.printStackTrace();
                 }
@@ -94,5 +94,6 @@ public class Translator {
     }
 
     public Map<String, String> getCurrentLangStrings() { return currentLangStrings; }
+
     public TranslationStorage getMcEnglish() { return mcEnglish; }
 }

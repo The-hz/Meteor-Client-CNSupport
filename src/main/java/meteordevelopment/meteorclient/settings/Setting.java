@@ -21,12 +21,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
 public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
     private static final List<String> NO_SUGGESTIONS = new ArrayList<>(0);
 
     public final String name;
-    public String title; // 改为非 final 以便翻译修改
-    public String description; // 改为非 final 以便翻译修改
+    public String title;
+    private String normalTitle;
+    public String description;
+    private String normalDescription;
     private final IVisible visible;
 
     protected final T defaultValue;
@@ -41,9 +45,11 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
     public Setting(String name, String description, T defaultValue, Consumer<T> onChanged, Consumer<Setting<T>> onModuleActivated, IVisible visible) {
         this.name = name;
         this.title = Utils.nameToTitle(name);
+        this.normalTitle = Utils.nameToTitle(name);
         this.description = description;
+        this.normalDescription = description;
 
-        //translate
+        //translate - init
         Translator translator = Translator.getInstance();
         translator.reload(MinecraftClient.getInstance().getResourceManager());
         String settingKey = "Setting.Meteor." + this.name;
@@ -59,13 +65,19 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
         resetImpl();
     }
 
-    public void changeLanguage() {
-        Translator translator = Translator.getInstance();
-        translator.reload(MinecraftClient.getInstance().getResourceManager());
-        String settingKey = "Setting.Meteor." + this.name;
-        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(settingKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
+    public void changeLanguage(String languageCode) {
+        //when user change language
+        if (languageCode.toLowerCase().contains("zh_")) {
+            Translator translator = Translator.getInstance();
+            translator.reload(mc.getResourceManager());
+            String settingKey = "Setting.Meteor." + this.name;
+            String descriptionKey = "Setting.Meteor." + this.name + ".Description";
+            this.title = translator.Translate(settingKey, this.title);
+            this.description = translator.Translate(descriptionKey, this.description);
+        }else{
+            this.title = this.normalTitle;
+            this.description = this.normalDescription;
+        }
     }
 
     @Override
