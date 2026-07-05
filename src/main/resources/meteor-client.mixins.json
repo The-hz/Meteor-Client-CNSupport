@@ -190,9 +190,11 @@
     "WorldChunkMixin",
     "WorldRendererAccessor",
     "WorldRendererMixin",
-    "YggdrasilMinecraftSessionServiceAccessor"
+    "YggdrasilMinecraftSessionServiceAccessor",
+    "DeprecatedLanguageDataMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": []
 }
