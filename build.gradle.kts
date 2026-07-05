@@ -1,20 +1,44 @@
+import org.gradle.api.provider.ValueSource
+import org.gradle.api.provider.ValueSourceParameters
+import java.io.ByteArrayOutputStream
+
 plugins {
     id("fabric-loom") version "1.9-SNAPSHOT"
     id("maven-publish")
     id("com.gradleup.shadow") version "9.0.0-beta4"
 }
 
+abstract class GitCommitCountValueSource : ValueSource<String, ValueSourceParameters.None> {
+    override fun obtain(): String {
+        return runCatching {
+            ProcessBuilder("git", "rev-list", "--count", "HEAD")
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
+                .inputStream.bufferedReader().readText().trim()
+        }.getOrDefault("local")
+    }
+}
+
+abstract class GitCommitValueSource : ValueSource<String, ValueSourceParameters.None> {
+    override fun obtain(): String {
+        return runCatching {
+            ProcessBuilder("git", "rev-parse", "--short", "HEAD")
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
+                .inputStream.bufferedReader().readText().trim()
+        }.getOrDefault("local")
+    }
+}
+
+val gitCommitCountProvider = providers.of(GitCommitCountValueSource::class.java) {}
+val gitCommitProvider = providers.of(GitCommitValueSource::class.java) {}
+
 base {
     archivesName = properties["archives_base_name"] as String
     group = properties["maven_group"] as String
 
-    val suffix = if (project.hasProperty("build_number")) {
-        project.findProperty("build_number")
-    } else {
-        "local"
-    }
-
-    version = properties["minecraft_version"] as String + "-" + suffix
+    val buildNumber = gitCommitCountProvider.get()
+    version = properties["minecraft_version"] as String + "-" + buildNumber
 }
 
 repositories {
@@ -115,8 +139,8 @@ afterEvaluate {
 
 tasks {
     processResources {
-        val buildNumber = project.findProperty("build_number")?.toString() ?: ""
-        val commit = project.findProperty("commit")?.toString() ?: ""
+        val buildNumber = gitCommitCountProvider.get()
+        val commit = gitCommitProvider.get()
 
         val propertyMap = mapOf(
             "version" to project.version,
