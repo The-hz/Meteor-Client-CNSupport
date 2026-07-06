@@ -28,9 +28,7 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
 
     public final String name;
     public String title;
-    private String normalTitle;
     public String description;
-    private String normalDescription;
     private final IVisible visible;
 
     protected final T defaultValue;
@@ -42,22 +40,18 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
     public Module module;
     public boolean lastWasVisible;
 
-    Translator translator = Translator.getInstance();
+
 
     public Setting(String name, String description, T defaultValue, Consumer<T> onChanged, Consumer<Setting<T>> onModuleActivated, IVisible visible) {
         this.name = name;
         this.title = Utils.nameToTitle(name);
-        this.normalTitle = Utils.nameToTitle(name);
         this.description = description;
-        this.normalDescription = description;
 
-        //translate - init
-
-        translator.reload(MinecraftClient.getInstance().getResourceManager());
+        Translator.reload(MinecraftClient.getInstance().getResourceManager());
         String settingKey = "Setting.Meteor." + this.name;
         String descriptionKey = "Setting.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(settingKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
+        this.title = Translator.Translate(settingKey, this.name);
+        this.description = Translator.Translate(descriptionKey, this.name);
 
         this.defaultValue = defaultValue;
         this.onChanged = onChanged;
@@ -65,16 +59,6 @@ public abstract class Setting<T> implements IGetter<T>, ISerializable<T> {
         this.visible = visible;
 
         resetImpl();
-    }
-
-    public void changeLanguage(String languageCode) {
-        if(!translator.languageCodeFromEvent.equals(languageCode)){
-            translator.languageCodeFromEvent = languageCode;
-        }
-        String settingKey = "Setting.Meteor." + this.name;
-        String descriptionKey = "Setting.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(settingKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
     }
 
     @Override

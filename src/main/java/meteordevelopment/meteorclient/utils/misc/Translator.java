@@ -6,15 +6,15 @@
  * Original: https://github.com/dingzhen-vape/Meteor-I18n-Support-plugin
  */
 
+//其实基本都是我拿格调改的，被我改的爹妈认不出来了💦
+
 package meteordevelopment.meteorclient.utils.misc;
 
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import meteordevelopment.meteorclient.MeteorClient;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.TranslationStorage;
+import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -29,16 +29,28 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
 public class Translator {
-    private static final Translator INSTANCE = new Translator();
-    public static Translator getInstance() { return INSTANCE; }
+    private static final JsonObject langJson = new JsonObject();
+    private static Map<String, String> currentLangStrings;
 
-    private final JsonObject langJson = new JsonObject();
-    private TranslationStorage mcEnglish;
-    private Map<String, String> currentLangStrings;
+    public static String languageCodeFromEvent = "zh_cn";
 
-    public String Translate(String key, String name) {
-        String value = this.currentLangStrings != null ? this.currentLangStrings.get(key) : null;
+    private Translator() {}
+
+    public static String Translate(String key, String name) {
+        String value = null;
+        if (currentLangStrings != null) {
+            value = currentLangStrings.get(key);
+            if (!languageCodeFromEvent.equals("zh_cn")) {
+                if (!key.contains(".Description")) {
+                    value = Utils.nameToTitle(name);
+                }else{
+                    value = name;
+                }
+            }
+        }
 
         if (value != null) {
             return value;
@@ -51,49 +63,37 @@ public class Translator {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return name + " | Error Msg";
         }
-        return name;
     }
 
-    public void reload(ResourceManager manager) {
+    public static void initTranslator() {
+        languageCodeFromEvent = mc.getLanguageManager().getLanguage();
+    }
+
+    public static void reload(ResourceManager manager) {
         if (manager == null) return;
-        mcEnglish = TranslationStorage.load(manager, Lists.newArrayList("en_us.json"), false);
-
         HashMap<String, String> currentLangStrings = new HashMap<>();
-        loadTranslations(manager, getCurrentLangCodes(), currentLangStrings::put);
-        this.currentLangStrings = Collections.unmodifiableMap(currentLangStrings);
+        loadTranslations(manager, getCurrentLangCode(), currentLangStrings::put);
+        Translator.currentLangStrings = Collections.unmodifiableMap(currentLangStrings);
     }
 
-    private Iterable<String> getCurrentLangCodes() {
-        String mainLangCode = MinecraftClient.getInstance().getLanguageManager().getLanguage().toLowerCase();
-
-        ArrayList<String> langCodes = new ArrayList<>();
-        langCodes.add("en_us.json");
-        if (!"en_us.json".equals(mainLangCode)) {
-            langCodes.add(mainLangCode);
-        }
-
-        return langCodes;
+    private static String getCurrentLangCode() {
+        return languageCodeFromEvent;
     }
 
-    private void loadTranslations(ResourceManager manager, Iterable<String> langCodes, BiConsumer<String, String> entryConsumer) {
-        for (String langCode : langCodes) {
-            String langFilePath = "lang/" + langCode + ".json";
+    private static void loadTranslations(ResourceManager manager, String langCode, BiConsumer<String, String> entryConsumer) {
+        String langFilePath = "lang/" + langCode + ".json";
 
-            Identifier langId = Identifier.of(MeteorClient.MOD_ID, langFilePath);
+        Identifier langId = Identifier.of(MeteorClient.MOD_ID, langFilePath);
 
-            for (Resource resource : manager.getAllResources(langId)) {
-                try (InputStream stream = resource.getInputStream()) {
-                    Language.load(stream, entryConsumer);
-                } catch (IOException e) {
-                    System.out.println("Failed to load translations for " + langCode + " from pack " + resource.getPackId());
-                    e.printStackTrace();
-                }
+        for (Resource resource : manager.getAllResources(langId)) {
+            try (InputStream stream = resource.getInputStream()) {
+                Language.load(stream, entryConsumer);
+            } catch (IOException e) {
+                System.out.println("Failed to load translations for " + langCode + " from pack " + resource.getPackId());
+                e.printStackTrace();
             }
         }
     }
-
-    public Map<String, String> getCurrentLangStrings() { return currentLangStrings; }
-
-    public TranslationStorage getMcEnglish() { return mcEnglish; }
 }

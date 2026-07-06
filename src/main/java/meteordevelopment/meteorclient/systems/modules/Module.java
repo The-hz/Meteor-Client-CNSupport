@@ -33,9 +33,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public final Category category;
     public final String name;
     public String description;
-    private String normalDescription;
     public String title;
-    private String normalTitle;
     public final String[] aliases;
     public final Color color;
 
@@ -53,7 +51,7 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public boolean chatFeedback = true;
     public boolean favorite = false;
 
-    Translator translator = Translator.getInstance();
+
 
     public Module(Category category, String name, String description, String... aliases) {
         if (name.contains(" ")) MeteorClient.LOG.warn("Module '{}' contains invalid characters in its name making it incompatible with Meteor Client commands.", name);
@@ -62,18 +60,15 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
         this.category = category;
         this.name = name;
         this.title = Utils.nameToTitle(name);
-        this.normalTitle = Utils.nameToTitle(name);
         this.description = description;
-        this.normalDescription = description;
         this.aliases = aliases;
         this.color = Color.fromHsv(Utils.random(0.0, 360.0), 0.35, 1);
 
-        //translate - init
-        translator.reload(mc.getResourceManager());
+        Translator.reload(mc.getResourceManager());
         String moduleKey = "Module.Meteor." + this.name;
         String descriptionKey = "Module.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(moduleKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
+        this.title = Translator.Translate(moduleKey, this.name);
+        this.description = Translator.Translate(descriptionKey, this.name);
 
         String classname = this.getClass().getName();
         for (MeteorAddon addon : AddonManager.ADDONS) {
@@ -96,16 +91,6 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
 
     public String getTitle() {
         return title;
-    }
-
-    public void changeLanguage(String languageCode) {
-        if(!translator.languageCodeFromEvent.equals(languageCode)){
-            translator.languageCodeFromEvent = languageCode;
-        }
-        String moduleKey = "Module.Meteor." + this.name;
-        String descriptionKey = "Module.Meteor." + this.name + ".Description";
-        this.title = translator.Translate(moduleKey, this.title);
-        this.description = translator.Translate(descriptionKey, this.description);
     }
 
     public void onActivate() {}
