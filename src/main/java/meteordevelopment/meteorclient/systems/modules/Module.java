@@ -53,6 +53,8 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     public boolean chatFeedback = true;
     public boolean favorite = false;
 
+    Translator translator = Translator.getInstance();
+
     public Module(Category category, String name, String description, String... aliases) {
         if (name.contains(" ")) MeteorClient.LOG.warn("Module '{}' contains invalid characters in its name making it incompatible with Meteor Client commands.", name);
 
@@ -67,7 +69,6 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
         this.color = Color.fromHsv(Utils.random(0.0, 360.0), 0.35, 1);
 
         //translate - init
-        Translator translator = Translator.getInstance();
         translator.reload(mc.getResourceManager());
         String moduleKey = "Module.Meteor." + this.name;
         String descriptionKey = "Module.Meteor." + this.name + ".Description";
@@ -98,18 +99,13 @@ public abstract class Module implements ISerializable<Module>, Comparable<Module
     }
 
     public void changeLanguage(String languageCode) {
-        //translate - when user change language
-        if (languageCode.toLowerCase().contains("zh_")) {
-            Translator translator = Translator.getInstance();
-            translator.reload(mc.getResourceManager());
-            String moduleKey = "Module.Meteor." + this.name;
-            String descriptionKey = "Module.Meteor." + this.name + ".Description";
-            this.title = translator.Translate(moduleKey, this.title);
-            this.description = translator.Translate(descriptionKey, this.description);
-        }else{
-            this.title = normalTitle;
-            this.description = normalDescription;
+        if(!translator.languageCodeFromEvent.equals(languageCode)){
+            translator.languageCodeFromEvent = languageCode;
         }
+        String moduleKey = "Module.Meteor." + this.name;
+        String descriptionKey = "Module.Meteor." + this.name + ".Description";
+        this.title = translator.Translate(moduleKey, this.title);
+        this.description = translator.Translate(descriptionKey, this.description);
     }
 
     public void onActivate() {}
