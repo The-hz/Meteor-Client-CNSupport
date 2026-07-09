@@ -54,7 +54,7 @@ public class Translator {
 
         if (value != null) {
             return value;
-        } else {
+        } else {//when missing
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             langJson.addProperty(key, name);
             Path path = Paths.get("lang.json");
@@ -63,7 +63,12 @@ public class Translator {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return name + " | Error Msg";
+            if(key.contains(".Description")){
+                value = name;
+            }else{
+                value = Utils.nameToTitle(name);
+            }
+            return value;
         }
     }
 
