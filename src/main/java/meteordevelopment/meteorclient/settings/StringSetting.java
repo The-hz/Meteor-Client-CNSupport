@@ -31,6 +31,14 @@ public class StringSetting extends Setting<String> {
 
     @Override
     protected boolean isValueValid(String value) {
+        if (filter == null) return true;
+
+        for (int i = 0; i < value.length(); i++) {
+            if (!filter.filter(value, value.charAt(i))) {
+                return false;
+            }
+        }
+
         return true;
     }
 

@@ -627,4 +627,13 @@ public class Utils {
         if (text.contains(":") && character == ':') return false;
         return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') || (character >= '0' && character <= '9') || character == '.' || character == '-';
     }
+
+    public static boolean fileNameFilter(String text, char character) {
+        return (character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9') ||
+            character == '_' ||
+            character == '-' ||
+            character == ' ';
+    }
 }
